@@ -34,6 +34,7 @@ def _abstractify(socket_name):
 
 
 def _sd_notify(unset_env, msg):
+    #取环境变量，并连接到相应的unix socket,并发送消息，如果需要移除对应的环境变量
     notify_socket = os.getenv('NOTIFY_SOCKET')
     if notify_socket:
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)

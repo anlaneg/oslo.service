@@ -88,6 +88,7 @@ def _check_service_base(service):
                         % {'service': service, 'base': ServiceBase})
 
 
+#定义所有Service的基类（需要具备start,stop,wait,reset功能）
 @six.add_metaclass(abc.ABCMeta)
 class ServiceBase(object):
     """Base class for all services."""
@@ -117,6 +118,7 @@ class Singleton(type):
     _semaphores = lockutils.Semaphores()
 
     def __call__(cls, *args, **kwargs):
+        #加锁，检查如果cls的实例不存在，则创建其实例
         with lockutils.lock('singleton_lock', semaphores=cls._semaphores):
             if cls not in cls._instances:
                 cls._instances[cls] = super(Singleton, cls).__call__(
@@ -483,6 +485,7 @@ class ProcessLauncher(object):
         launcher.launch_service(service)
         return launcher
 
+    #按多进程方式启动
     def _start_child(self, wrap):
         if len(wrap.forktimes) > wrap.workers:
             # Limit ourselves to one process a second (over the period of
@@ -518,6 +521,7 @@ class ProcessLauncher(object):
 
         return pid
 
+    #启动多个进程，并载入服务
     def launch_service(self, service, workers=1):
         """Launch a service with a given number of workers.
 
